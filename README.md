@@ -1,1 +1,1 @@
-# MyIDLE
+TKInterを利用したIDLE改変アプリケーション
