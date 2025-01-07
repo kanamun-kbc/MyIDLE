@@ -27,27 +27,31 @@ def set_file_path(path):
 # ファイルを開くための関数
 # askopenfilenameダイアログを表示し
 # 選択されたファイルの内容を読み取り、テキストボックスに表示
-def opne_file():
-    path = askopenfilename(filetypes=[('Python Files','py')])
-    with open(path,'r',encoding='utf-8',errors='ignore') as file:
-        code=file.read()
-        code_input.delete('1.0',END)
-        code_input.insert('1.0',code)
-        set_file_path(path)
+def open_file():
+    path = askopenfilename(filetypes=[('Python Files','*.py')])
+    if path:  # キャンセル時の処理
+        with open(path,'r',encoding='utf-8',errors='ignore') as file:
+            code=file.read()
+            code_input.delete('1.0',END)
+            code_input.insert('1.0',code)
+            set_file_path(path)
 
 # ファイルを保存するための関数
 # ファイルが指定されていない場合はasksaveasfilenameダイアログを表示
 # ファイルが指定されている場合は既存のファイルパスを使用
 def save():
     if file_path=='':
-        path = asksaveasfilename(filetypes=[('Python Files','py')])
+        path = asksaveasfilename(filetypes=[('Python Files','*.py')])
+        if path and not path.endswith('.py'):
+            path += '.py'
     else:
-        path=file_path
-
-    with open(path,'w') as file:
-        code = code_input.get('1.0',END)
-        file.write(code)
-        set_file_path(path)
+        path = file_path
+    
+    if path:  # Cancel時の処理も追加
+        with open(path,'w') as file:
+            code = code_input.get('1.0',END)
+            file.write(code)
+            set_file_path(path)
 
 # ファイルを実行するための関数
 # ファイルが保存されていない場合はエラーメッセージボックスを表示
@@ -94,7 +98,7 @@ Run=PhotoImage(file="run.png")
 # ボタンを作成し、指定された位置に配置
 # ボタンがクリックされたときにopen_file関数が実行
 # 以下二つ同じ
-Button(root,image=Open,bg="#323846",bd=0,command=opne_file).place(x=30,y=30)
+Button(root,image=Open,bg="#323846",bd=0,command=open_file).place(x=30,y=30)
 Button(root,image=Save,bg="#323846",bd=0,command=save).place(x=30,y=145)
 Button(root,image=Run,bg="#323846",bd=0,command=run).place(x=30,y=260)
 
